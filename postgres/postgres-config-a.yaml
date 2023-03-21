@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-config-a
+  namespace: default
+data:
+  postgres_user: admin
+  postgres_password: "123456"
+  postgres_db: "node"

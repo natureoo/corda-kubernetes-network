@@ -1,0 +1,86 @@
+#kind: PersistentVolume
+#apiVersion: v1
+#metadata:
+#  name: postgres-pv-volume-b
+#  labels:
+#    type: local
+#spec:
+#  storageClassName: manual
+#  capacity:
+#    storage: 1Gi
+#  accessModes:
+#    - ReadOnlyMany
+#  hostPath:
+#    path: "/var/log/data/postgres/party-b/data"
+#---
+#apiVersion: v1
+#kind: PersistentVolumeClaim
+#metadata:
+#  name: postgres-pv-claim-b
+#spec:
+#  storageClassName: manual
+#  accessModes:
+#    - ReadOnlyMany
+#  resources:
+#    requests:
+#      storage: 1Gi
+#---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-b
+spec:
+  selector:
+    matchLabels:
+      app: postgres-b
+  template:
+    metadata:
+      labels:
+        app: postgres-b
+    spec:
+      #      volumes:
+      #        - name: postgres-storage
+      #          persistentVolumeClaim:
+      #            claimName: postgres-pv-claim
+      containers:
+        - image: postgres
+          name: postgres-b
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config-b
+                  key: postgres_user
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config-b
+                  key: postgres_password
+            - name: POSTGRES_DB
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config-b
+                  key: postgres_db
+          #            - name: PGDATA
+          #              value: /var/lib/postgresql/data/pgdata
+          ports:
+            - containerPort: 5432
+              name: postgres-b
+#          volumeMounts:
+#            - name: postgres-persistent-storage-b
+#              mountPath: /var/lib/postgresql/data
+#      volumes:
+#        - name: postgres-persistent-storage-b
+#          persistentVolumeClaim:
+#            claimName: postgres-pv-claim-b
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-b
+spec:
+  type: ClusterIP
+  ports:
+    - port: 5432
+  selector:
+    app: postgres-b

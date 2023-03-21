@@ -1,0 +1,86 @@
+#kind: PersistentVolume
+#apiVersion: v1
+#metadata:
+#  name: postgres-pv-volume-a
+#  labels:
+#    type: local
+#spec:
+#  storageClassName: manual
+#  capacity:
+#    storage: 1Gi
+#  accessModes:
+#    - ReadOnlyMany
+#  hostPath:
+#    path: "/var/log/data/postgres/node/data"
+#---
+#apiVersion: v1
+#kind: PersistentVolumeClaim
+#metadata:
+#  name: postgres-pv-claim-a
+#spec:
+#  storageClassName: manual
+#  accessModes:
+#    - ReadOnlyMany
+#  resources:
+#    requests:
+#      storage: 1Gi
+#---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-a
+spec:
+  selector:
+    matchLabels:
+      app: postgres-a
+  template:
+    metadata:
+      labels:
+        app: postgres-a
+    spec:
+      #      volumes:
+      #        - name: postgres-storage
+      #          persistentVolumeClaim:
+      #            claimName: postgres-pv-claim
+      containers:
+        - image: postgres
+          name: postgres-a
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config-a
+                  key: postgres_user
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config-a
+                  key: postgres_password
+            - name: POSTGRES_DB
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config-a
+                  key: postgres_db
+          #            - name: PGDATA
+          #              value: /var/lib/postgresql/data/pgdata
+          ports:
+            - containerPort: 5432
+              name: postgres-a
+#          volumeMounts:
+#            - name: postgres-persistent-storage-a
+#              mountPath: /var/lib/postgresql/data
+#      volumes:
+#        - name: postgres-persistent-storage-a
+#          persistentVolumeClaim:
+#            claimName: postgres-pv-claim-a
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-a
+spec:
+  type: ClusterIP
+  ports:
+    - port: 5432
+  selector:
+    app: postgres-a

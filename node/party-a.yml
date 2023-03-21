@@ -1,0 +1,69 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: partya-filestore
+provisioner: filestore.csi.storage.gke.io
+volumeBindingMode: Immediate
+allowVolumeExpansion: true
+parameters:
+  tier: standard
+#  should use the network of GKE cluster
+  network: vpctest1
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: partyapvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: partya-filestore
+  resources:
+    requests:
+      storage: 1Ti
+---
+apiVersion: "apps/v1"
+kind: Deployment
+metadata:
+  name: node
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: node
+  template:
+    metadata:
+      labels:
+        app: node
+    spec:
+      containers:
+        - name: node
+          image: europe-west2-docker.pkg.dev/canvas-hook-339503/corda/corda-os:4.9.6
+          env:
+            - name: "ROLE"
+              value: "PARTY"
+          ports:
+            - containerPort: 10002
+          volumeMounts:
+            - name: mypvc
+              mountPath: /app
+      volumes:
+        - name: mypvc
+          persistentVolumeClaim:
+            claimName: partyapvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: node
+spec:
+  type: NodePort
+  ports:
+    - name: p2p
+      port: 10002
+      targetPort: 10002
+    - name: rpc
+      port: 10003
+      targetPort: 10003
+  selector:
+    app: node
