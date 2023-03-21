@@ -1,0 +1,23 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: partyb-volume
+provisioner: volume.csi.storage.gke.io
+volumeBindingMode: Immediate
+allowVolumeExpansion: true
+parameters:
+  tier: standard
+  #  should use the network of GKE cluster
+  network: vpctest1
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: partybpvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: partyb-volume
+  resources:
+    requests:
+      storage: 1Ti
