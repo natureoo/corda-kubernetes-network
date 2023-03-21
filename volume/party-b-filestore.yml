@@ -1,8 +1,8 @@
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
-  name: partyb-volume
-provisioner: volume.csi.storage.gke.io
+  name: partyb-filestore
+provisioner: filestore.csi.storage.gke.io
 volumeBindingMode: Immediate
 allowVolumeExpansion: true
 parameters:
@@ -17,7 +17,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteMany
-  storageClassName: partyb-volume
+  storageClassName: partyb-filestore
   resources:
     requests:
       storage: 1Ti

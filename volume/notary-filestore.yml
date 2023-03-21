@@ -1,8 +1,8 @@
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
-  name: notary-volume
-provisioner: volume.csi.storage.gke.io
+  name: notary-filestore
+provisioner: filestore.csi.storage.gke.io
 volumeBindingMode: Immediate
 allowVolumeExpansion: true
 parameters:
@@ -17,7 +17,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteMany
-  storageClassName: notary-volume
+  storageClassName: notary-filestore
   resources:
     requests:
       storage: 1Ti
