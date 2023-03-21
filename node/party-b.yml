@@ -1,27 +1,3 @@
-apiVersion: storage.k8s.io/v1
-kind: StorageClass
-metadata:
-  name: partyb-filestore
-provisioner: filestore.csi.storage.gke.io
-volumeBindingMode: Immediate
-allowVolumeExpansion: true
-parameters:
-  tier: standard
-  #  should use the network of GKE cluster
-  network: vpctest1
----
-kind: PersistentVolumeClaim
-apiVersion: v1
-metadata:
-  name: partybpvc
-spec:
-  accessModes:
-    - ReadWriteMany
-  storageClassName: partyb-filestore
-  resources:
-    requests:
-      storage: 1Ti
----
 apiVersion: "apps/v1"
 kind: Deployment
 metadata:
@@ -37,7 +13,7 @@ spec:
         app: party-b
     spec:
       containers:
-        - name: node
+        - name: party-b
           #          these images should change to your artifact registry
           image: europe-west2-docker.pkg.dev/canvas-hook-339503/corda/corda-os:4.9.6
           env:
