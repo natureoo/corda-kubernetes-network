@@ -38,6 +38,7 @@ spec:
     spec:
       containers:
         - name: node
+          #          these images should change to your artifact registry
           image: europe-west2-docker.pkg.dev/canvas-hook-339503/corda/corda-os:4.9.6
           env:
             - name: "ROLE"
