@@ -2,7 +2,7 @@
 DLT corda-kubernetes-network
 
 ./build.sh
-kubectl apply -f postgres/
+
 kubectl apply -f volume/
 kubectl apply -f node/
 
@@ -40,10 +40,8 @@ drwx------. 2 root root    16384 Mar 21 09:26 lost+found
 -rwxr-xr-x. 1 root root       50 Mar 22 05:02 entrypoint.sh
 [root@instance-corda4 party-a]# 
 
-1.为集群启用 Workload Identity
-2.k8s-sidecar/service_account.yaml
-3.在 YOUR-GSA-NAME 和 YOUR-KSA-NAME 之间启用 IAM 绑定：
-gcloud iam service-accounts add-iam-policy-binding \
---role="roles/iam.workloadIdentityUser" \
---member="serviceAccount:YOUR-GOOGLE-CLOUD-PROJECT.svc.id.goog[YOUR-K8S-NAMESPACE/YOUR-KSA-NAME]" \
-YOUR-GSA-NAME@YOUR-GOOGLE-CLOUD-PROJECT.iam.gserviceaccount.com
+kubectl port-forward party-a-5c487dcd48-5bspv 20003:10003  2>&1 &
+
+kubectl port-forward party-b-7489666b8c-6zl7x 30003:10003  2>&1 &
+
+psql "sslmode=disable dbname=postgres user=postgres hostaddr=23.251.132.201"
