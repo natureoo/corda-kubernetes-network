@@ -53,3 +53,4 @@ GCP
 gcloud compute addresses create corda4-demo-ip --region europe-west2
 gcloud compute addresses describe corda4-demo-ip --region europe-west2
 
+gcloud compute addresses delete corda4-demo-ip --project canvas-hook-339503 --region europe-west2
