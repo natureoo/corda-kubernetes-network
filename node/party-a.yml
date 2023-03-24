@@ -41,6 +41,10 @@ spec:
   selector:
     app: party-a
   ports:
+    - name: p2p
+      protocol: TCP
+      port: 10002
+      targetPort: 10002
     - name: rpc
       protocol: TCP
       port: 10003
