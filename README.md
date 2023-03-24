@@ -49,3 +49,7 @@ psql "sslmode=disable dbname=postgres user=postgres hostaddr=23.251.132.201"
 GCP
 内部 TCP/UDP Load Balancer
 必须在同一vpc，同一region下才能访问到
+
+gcloud compute addresses create corda4-demo-ip --region europe-west2
+gcloud compute addresses describe corda4-demo-ip --region europe-west2
+
