@@ -45,3 +45,7 @@ kubectl port-forward party-a-5c487dcd48-5bspv 20003:10003  2>&1 &
 kubectl port-forward party-b-7489666b8c-6zl7x 30003:10003  2>&1 &
 
 psql "sslmode=disable dbname=postgres user=postgres hostaddr=23.251.132.201"
+
+GCP
+内部 TCP/UDP Load Balancer
+必须在同一vpc，同一region下才能访问到
