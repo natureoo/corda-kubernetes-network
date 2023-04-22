@@ -60,3 +60,19 @@ gcloud compute addresses delete corda4-demo-ip --project canvas-hook-339503 --re
 echo -n 'KubernetesRocks!' | base64
  ->   S3ViZXJuZXRlc1JvY2tzIQ==
 
+## Edit Secret
+kubectl edit secret mariadb-root-password
+
+## Decode the Secret
+### Returns the base64 encoded secret string
+kubectl get secret mariadb-root-password -o jsonpath='{.data.password}'
+
+### Pipe it to `base64 --decode -` to decode:
+kubectl get secret mariadb-root-password -o jsonpath='{.data.password}' | base64 --decode -
+
+## Another way to create Secrets
+kubectl create secret generic mariadb-user-creds \
+--from-literal=MYSQL_USER=kubeuser\
+--from-literal=MYSQL_PASSWORD=kube-still-rocks
+secret/mariadb-user-creds created
+
