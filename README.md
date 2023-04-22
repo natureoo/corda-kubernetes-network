@@ -76,3 +76,16 @@ kubectl create secret generic mariadb-user-creds \
 --from-literal=MYSQL_PASSWORD=kube-still-rocks
 secret/mariadb-user-creds created
 
+# Create a ConfigMap
+kubectl create configmap mariadb-config --from-file=max_allowed_packet.cnf
+
+## View the new ConfigMap and read the data
+kubectl get configmap mariadb-config
+
+kubectl describe cm mariadb-config
+
+## Edit configmap
+kubectl edit configmap mariadb-config
+
+## Verify
+kubectl get configmap mariadb-config -o "jsonpath={.data['max_allowed_packet\.cnf']}"
